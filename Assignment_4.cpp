@@ -11,7 +11,7 @@
         Use Binary Search Tree for implementation.
  */
 
-#include<iostream>
+#include "iostream"
 using namespace std;
 
 
@@ -52,33 +52,13 @@ public:
             return new Node(word);
         }
         else{
-            if(word->name<root->word->name){
+            if(word->name < root->word->name){
                 root->left=insertWord(root->left, word);
             }
             else{
                 root->right=insertWord(root->right, word);
             }
             return root;
-        }
-    }
-    void printWordsInAscending(Node* root){
-        if(root==NULL){
-            return;
-        }
-        else{
-            printWordsInAscending(root->left);
-            root->word->print();
-            printWordsInAscending(root->right);
-        }
-    }
-    void printWordsIntDescending(Node* root){
-        if(root==NULL){
-            return;
-        }
-        else{
-            printWordsIntDescending(root->right);
-            root->word->print();
-            printWordsIntDescending(root->left);
         }
     }
     Node* deleteHelper(Node* root, Node* subRoot){
@@ -95,11 +75,18 @@ public:
             return root;
         }
         if(root->word->name==wordName){
-            return deleteHelper(root->right, root->left);
+            Node* right=root->right;
+            Node* left=root->left;
+            free(root);
+            return deleteHelper(right, left);
         }
         else{
-            root->left=deleteWord(root->left, wordName);
-            root->right=deleteWord(root->right, wordName);
+            if(wordName < root->word->name) {
+                root->left = deleteWord(root->left, wordName);
+            }
+            else{
+                root->right = deleteWord(root->right, wordName);
+            }
             return root;
         }
     }
@@ -122,10 +109,12 @@ public:
     void findWord(Node* root, string wordName, int comparisons){
         if(root==NULL){
             cout<<"No such word exist!"<<endl;
+            return;
         }
-        if(root->word->name==wordName){
+        if(root->word->name == wordName){
             cout<<wordName<<" found in "<<comparisons+1<<
-            " comparisons!"<<endl;
+                " comparisons!"<<endl;
+            return;
         }
         else{
             if(wordName<root->word->name){
@@ -136,57 +125,88 @@ public:
             }
         }
     }
+    void printWordsInAscending(Node* root){
+        if(root==NULL){
+            return;
+        }
+        else{
+            printWordsInAscending(root->left);
+            root->word->print();
+            printWordsInAscending(root->right);
+        }
+    }
+    void printWordsIntDescending(Node* root){
+        if(root==NULL){
+            return;
+        }
+        else{
+            printWordsIntDescending(root->right);
+            root->word->print();
+            printWordsIntDescending(root->left);
+        }
+    }
 };
 
-
-
 int main(){
-
-    Word* words[10];
-    words[0]=new Word("Innovation", " Introducing new ideas or methods.");
-    words[1]=new Word("Sustainability", "Sustainability.");
-    words[2]=new Word("Empathy", "Understanding and sharing others' feelings.");
-    words[3]=new Word("Resilience", "Quick recovery from difficulties.");
-    words[4]=new Word("Diversity", "Variety within a group or system.");
-    words[5]=new Word("Efficiency", "Accomplishing tasks with minimal waste.");
-    words[6]=new Word("Collaboration", "Working together to create something.");
-    words[7]=new Word("Adaptability", "Adjusting to new conditions.");
-    words[8]=new Word("Integrity", "Honesty and strong moral principles.");
-    words[9]=new Word("Communication", "Sharing or exchanging information.");
-
     Dictionary dict=Dictionary();
-
-    // inserting the words with their meanings in BST.
-    for(int x=0; x<10; x++){
-        dict.root=dict.insertWord(dict.root, words[x]);
+    int res=1;
+    while(res==1){
+        int choice=-1;
+        cout<<"What would you like to perform?"<<endl;
+        cout<<"1.Insert word.\n2.Delete word.\n3.Print in ascending order."<<endl;
+        cout<<"4.Print in descending order.\n5.Find keyword.\n6.Update meaning"<<endl;
+        cout<<"Your response: ";
+        cin>>choice;
+        if(choice==1){
+            int innerChoice=1;
+            while(innerChoice==1) {
+                string name = "";
+                string meaning = "";
+                cout << "Enter name: ";
+                cin >> name;
+                cout << "Enter meaning: ";
+                cin >> meaning;
+                dict.root = dict.insertWord(dict.root, new Word(name, meaning));
+                cout<<"Do you want to continue inserting?(Yes - 1, No - 2)"<<endl;
+                cout<<"Your response: ";
+                cin>>innerChoice;
+            }
+        }
+        else if(choice==2){
+            string name="";
+            cout<<"Enter word name:";
+            cin>>name;
+            dict.root=dict.deleteWord(dict.root, name);
+        }
+        else if(choice==3){
+            cout<<"The words and their meanings in ascending order :"<<endl;
+            dict.printWordsInAscending(dict.root);
+        }
+        else if(choice==4){
+            cout<<"The words and their meanings in descending order :"<<endl;
+            dict.printWordsIntDescending(dict.root);
+        }
+        else if(choice==5){
+            string name="";
+            cout<<"Enter word name: ";
+            cin>>name;
+            dict.findWord(dict.root, name, 0);
+        }
+        else if(choice==6){
+            string name="";
+            string meaning="";
+            cout<<"Enter word name: ";
+            cin>>name;
+            cout<<"Enter new meaning: ";
+            cin>>meaning;
+            dict.updateMeaning(dict.root, name, meaning);
+        }
+        else{
+            cout<<"Invalid choice!"<<endl;
+        }
+        cout<<"Do you want to continue the program? (Yes - 1, No - 2)"<<endl;
+        cout<<"Your response: ";
+        cin>>res;
     }
-
-    // printing the words in ascending order with their meanings.
-//    cout<<"The words of the dictionary in the ascending order are: "<<endl;
-//    dict.printWordsInAscending(dict.root);
-
-    // printing the words in descending order with their meanings.
-//    cout<<"The words of the dictionary in the ascending order are: "<<endl;
-//    dict.printWordsIntDescending(dict.root);
-
-    // deleting the word from the dictionary.
-//    cout<<"The words before deleting:"<<endl;
-//    dict.printWordsInAscending(dict.root);
-//    dict.deleteWord(dict.root, "Efficiency");
-//    cout<<"******************************************"<<endl;
-//    cout<<"The words after deleting:"<<endl;
-//    dict.printWordsInAscending(dict.root);
-
-    // updating the meaning of the word.
-//    cout<<"The words with their meanings before updating:"<<endl;
-//    dict.printWordsInAscending(dict.root);
-//    dict.updateMeaning(dict.root, "Empathy","Sharing others' emotions, understanding their perspective.");
-//    cout<<"The words with their meanings after updating:"<<endl;
-//    dict.printWordsInAscending(dict.root);
-
-    // finding the word in dictionary.
-//    dict.findWord(dict.root, "Collaboration", 0);   // exists in dictionary.
-//    dict.findWord(dict.root, "Feelings", 0);        // doesn't exist in dictionary.
-
     return 0;
 }
