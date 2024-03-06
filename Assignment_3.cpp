@@ -13,7 +13,6 @@
 #include<iostream>
 using namespace std;
 #include<queue>
-#include<math.h>
 
 class Node{
 public:
@@ -32,7 +31,7 @@ public:
     Node* root=NULL;
     Node* insert(Node* root, int data){
         if(root==NULL){
-            return root=new Node(data);
+            return new Node(data);
         }
         else{
             if(data<root->data){
@@ -49,6 +48,7 @@ public:
             return;
         }
         else{
+            cout<<"************************************************"<<endl;
             queue<Node*> q;
             Node* curr=root;
             q.push(curr);
@@ -75,6 +75,7 @@ public:
                     }
                 }
             }
+            cout<<"************************************************"<<endl;
         }
     }
     int minData(Node* root){
@@ -127,47 +128,63 @@ public:
 
 int main(){
     BinarySearchTree bst;
-    bst.root=bst.insert(bst.root, 40);
-    bst.root=bst.insert(bst.root, 30);
-    bst.root=bst.insert(bst.root, 25);
-    bst.root=bst.insert(bst.root, 35);
-    bst.root=bst.insert(bst.root, 50);
-    bst.root=bst.insert(bst.root, 45);
-    bst.root=bst.insert(bst.root, 60);
 
-//    bst.printTree(bst.root);
+    int res=1;
+    while(res==1){
+        int choice=-1;
+        cout<<"What would you like to perform?"<<endl;
+        cout<<"1.Insert a node.\n2.Search a value\n3.Find minimum value."<<endl;
+        cout<<"4.Swap nodes.\n5.Print Tree\n"
+        <<"6.Find number of nodes in the longest path from root."<<endl;
+        cout<<"You response: ";
+        cin>>choice;
+        if(choice==1){
+             int innerChoice=1;
+            while(innerChoice==1) {
+                cout << "Enter the value: ";
+                int v;
+                cin >> v;
+                bst.root = bst.insert(bst.root, v);
+                cout<<"Do you want to continue inserting nodes?(Yes - 1, No - 2)"<<endl;
+                cout<<"Your response: ";
+                cin>>innerChoice;
+            }
+        }
+        else if(choice==2){
+            int v;
+            cout<<"Enter the value: ";
+            cin>>v;
+            if(bst.search(bst.root, v)){
+                cout<<"The value exists in the tree"<<endl;
+            }
+            else{
+                cout<<"The value doesn't exist in the tree"<<endl;
+            }
+        }
+        else if(choice==3){
+            cout<<"The minimum value in the tree is "<<bst.minData(bst.root)<<endl;
+        }
+        else if(choice==4){
+            cout<<"The tree before swapping is: "<<endl;
+            bst.printTree(bst.root);
+            bst.swapNodes(bst.root);
+            cout<<"The tree after swapping is: "<<endl;
+            bst.printTree(bst.root);
+        }
+        else if(choice==5){
+            bst.printTree(bst.root);
+        }
+        else if(choice==6){
+            cout<<"The no.of nodes in the longest path from root is: "<<
+            bst.longestPathNodeCount(bst.root)<<endl;
+        }
+        else{
+            cout<<"Invalid choice"<<endl;
+        }
 
-    // minimum element.
-//    cout<<bst.minData(bst.root);
-
-    // searching an element.
-//    cout<<"The presence of key consists is: "<<bst.search(bst.root, 60);
-
-    // max no.of nodes of longest path.
-//    cout<<"The no.of nodes of the longest path is: "<<bst.longestPathNodeCount(bst.root);
-
-    // swapping the nodes of the tree.
-//    cout<<"The tree before swapping: "<<endl;
-//    bst.printTree(bst.root);
-//    cout<<endl;
-//    cout<<"The tree after swapping is: "<<endl;
-//    bst.printTree(bst.swapNodes(bst.root));
-
+        cout<<"Do you want to continue program?(Yes - 1, No - 2)"<<endl;
+        cout<<"Your response: ";
+        cin>>res;
+    }
+    return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
